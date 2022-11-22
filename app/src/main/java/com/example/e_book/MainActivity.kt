@@ -1,9 +1,11 @@
 package com.example.e_book
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -13,7 +15,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -26,40 +27,44 @@ import com.example.e_book.`class`.Screen
 import com.example.e_book.`class`.Screens
 import com.example.e_book.`class`.firebaseDataFile
 import com.example.e_book.data.dataProvider
+import com.example.e_book.data.dataProviderToCard
+import com.example.e_book.data.favorite
 import com.example.e_book.screen.*
 import com.example.e_book.ui.theme.EBookTheme
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.google.gson.Gson
 
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             EBookTheme {
                 Surface {
-                     sastaSpotity()
+                    SastaSpotity()
                 }
             }
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.P)
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     @Composable
-    fun sastaSpotity(){
+    fun SastaSpotity(){
         val navController= rememberNavController()
         EBookTheme() {
-            Scaffold(Modifier.background(color = androidx.compose.ui.graphics.Color.Gray),
-                bottomBar = { BottomNavigation(navController = navController) }
-            )
-            {
+
                 Navigation(navController=navController)
-            }
+
         }
     }
-    @OptIn(ExperimentalMaterialApi::class)
+
     @Composable
     fun Navigation(navController:NavHostController) {
         NavHost(navController = navController,
             startDestination = Screens.Splash.route) {
+
             composable("splash_screen") {
                 SplashScreen(navController = navController)
             }
@@ -68,11 +73,10 @@ class MainActivity : ComponentActivity() {
             }
 
             composable(BottomNavItem.Favorite.screen_route) {
-                Favorite()
+                Favorite(navController)
             }
-
             composable(BottomNavItem.Download.screen_route) {
-                Download()
+                Download(navController)
             }
             composable(BottomNavItem.Audio.screen_route) {
                 Audio()
@@ -84,15 +88,20 @@ class MainActivity : ComponentActivity() {
                 ProfileScreen(navController = navController)
             }
             composable(Screen.About.toString()) {
-//                About(navController = navController)
-                PdfViewer(navController =navController)
+                About(navController = navController)
+
+            }
+            composable(Screen.SignIn.toString()) {
+                SignIn(navController = navController)
+
+            }
+            composable(Screen.SignUp.toString()) {
+                SignUp(navController)
+
             }
             composable(Screen.Setting.toString()) {
                 Setting(navController = navController)
             }
-//            composable(Screen.MoreBook.toString()){
-//                Home(navController = navController)
-//            }
             composable("bookList/{book}", arguments = listOf(navArgument("book"){
                 type= NavType.StringType
             })) { backStackEntry ->
@@ -105,8 +114,33 @@ class MainActivity : ComponentActivity() {
                 type=NavType.StringType
             })){
                     navBackStackEntry ->navBackStackEntry.arguments?.getString("PlayBook")?.let{
-                    json ->val pdf =Gson().fromJson(json, firebaseDataFile::class.java)
-//                PdfViewer( navController=navController,book=pdf  )
+                    json ->val pdf =Gson().fromJson(json, dataProviderToCard::class.java)
+                PdfVieweroffline(navController = navController, book =pdf )
+
+            }
+            }
+            composable("bookPdfList/{BookPdfView}", arguments = listOf(navArgument("BookPdfView"){
+                type=NavType.StringType
+            })){
+                    navBackStackEntry ->navBackStackEntry.arguments?.getString("BookPdfView")?.let{
+                    json ->val pdf =Gson().fromJson(json, dataProviderToCard::class.java)
+                PdfVieweroffline( navController=navController,book=pdf )
+            }
+            }
+            composable("bookfavPdfList/{FAVBookPdfView}", arguments = listOf(navArgument("FAVBookPdfView"){
+                type=NavType.StringType
+            })){
+                    navBackStackEntry ->navBackStackEntry.arguments?.getString("FAVBookPdfView")?.let{
+                    json ->val favpdf =Gson().fromJson(json, dataProviderToCard::class.java)
+                PdfViewerofflineFav( navController=navController,book=favpdf )
+            }
+            }
+            composable("bookPdfdownList/{downbook}", arguments = listOf(navArgument("downbook"){
+                type=NavType.StringType
+            })){
+                    navBackStackEntry ->navBackStackEntry.arguments?.getString("downbook")?.let{
+                    json ->val favpdf =Gson().fromJson(json, dataProviderToCard::class.java)
+                PdfViewerofflineDown( navController=navController,book=favpdf )
             }
             }
         }
@@ -118,7 +152,6 @@ class MainActivity : ComponentActivity() {
 ){ val items= listOf(
     BottomNavItem.Home,
     BottomNavItem.Favorite,
-    BottomNavItem.Audio,
     BottomNavItem.Download,
     BottomNavItem.Setting
 )
@@ -131,8 +164,8 @@ class MainActivity : ComponentActivity() {
                 item -> BottomNavigationItem(
             icon ={ Icon(painterResource(id = item.icon), contentDescription = item.title)},
             label={Text(text = item.title, fontSize = 10.sp)},
-            selectedContentColor = androidx.compose.ui.graphics.Color.Black,
-            unselectedContentColor = androidx.compose.ui.graphics.Color.White,
+            selectedContentColor = Color.Red,
+            unselectedContentColor = Color.White,
             alwaysShowLabel = true,
             selected = currentRoute==item.screen_route,
             onClick = {
