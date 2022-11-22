@@ -7,26 +7,22 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.animateLottieCompositionAsState
-import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.e_book.R
 import com.example.e_book.`class`.BottomNavItem
+import com.example.e_book.`class`.Screen
 import com.example.e_book.`class`.Screens
-//import com.example.e_book.`class`.Screens
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.delay
-
+var user = Firebase.auth.currentUser
 @Composable
 fun SplashScreen(navController: NavController) {
     val scale = remember {
@@ -44,7 +40,9 @@ fun SplashScreen(navController: NavController) {
                 })
         )
         delay(2000L)
-        navController.navigate(BottomNavItem.Home.screen_route)
+        navController.navigate(if(user!=null){BottomNavItem.Home.screen_route}else{
+            Screen.SignIn.toString()
+        })
     }
 
     // Image
