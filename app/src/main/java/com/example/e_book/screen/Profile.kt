@@ -24,10 +24,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.drawable.toIcon
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.e_book.`class`.BottomNavItem
 import com.example.e_book.R
+import com.google.firebase.auth.FirebaseAuth
+
 @Composable
 fun ProfileScreen(  navController: NavController){
     val notification = rememberSaveable { mutableStateOf("") }
@@ -35,9 +38,9 @@ fun ProfileScreen(  navController: NavController){
         Toast.makeText(LocalContext.current, notification.value, Toast.LENGTH_LONG).show()
         notification.value = ""
     }
-    val name = rememberSaveable { mutableStateOf("default name") }
-    val username = rememberSaveable { mutableStateOf("default username") }
-    val bio = rememberSaveable { mutableStateOf("default bio") }
+    var email = FirebaseAuth.getInstance().currentUser?.email
+    val username =  rememberSaveable { mutableStateOf(username) }
+
     Column(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
@@ -62,15 +65,17 @@ fun ProfileScreen(  navController: NavController){
                 .padding(start = 4.dp, end = 4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Name", modifier = Modifier.width(100.dp))
-            TextField(
-                value = name.value,
-                onValueChange = { name.value = it },
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = Color.Transparent,
-                    textColor = Color.Black
+            Text(text = "Username", modifier = Modifier.width(100.dp))
+            if (email != null) {
+                TextField(
+                    value = email!!,
+                    onValueChange = { email = it },
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.Transparent,
+                        textColor = Color.Black
+                    )
                 )
-            )
+            }
         }
         Row(
             modifier = Modifier
@@ -78,7 +83,7 @@ fun ProfileScreen(  navController: NavController){
                 .padding(start = 4.dp, end = 4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Username", modifier = Modifier.width(100.dp))
+            Text(text = "Name", modifier = Modifier.width(100.dp))
             TextField(
                 value = username.value,
                 onValueChange = { username.value = it },
@@ -88,28 +93,6 @@ fun ProfileScreen(  navController: NavController){
                 )
             )
         }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            verticalAlignment = Alignment.Top
-        ) {
-            Text(
-                text = "Bio", modifier = Modifier
-                    .width(100.dp)
-                    .padding(top = 8.dp)
-            )
-            TextField(
-                value = bio.value,
-                onValueChange = { bio.value = it },
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = Color.Transparent,
-                    textColor = Color.Black
-                ),
-                singleLine = false,
-                modifier = Modifier.height(120.dp)
-            )
-        }
     }
 }
 
@@ -117,10 +100,7 @@ fun ProfileScreen(  navController: NavController){
 fun ProfileImage() {
     val imageUri = rememberSaveable { mutableStateOf("") }
     val painter = rememberAsyncImagePainter(
-        if (imageUri.value.isEmpty())
-            R.drawable.user
-        else
-            imageUri.value
+        imageUri.value.ifEmpty { R.drawable.user }
     )
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -144,9 +124,9 @@ fun ProfileImage() {
                 painter = painter,
                 contentDescription = null,
                 modifier = Modifier
-                    .wrapContentSize()
+                    .wrapContentSize().size(100.dp)
                     .clickable { launcher.launch("image/*") },
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.FillBounds
             )
         }
         Text(text = "Change profile picture")
