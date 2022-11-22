@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "97002070676",
+    "firebase_url": "https://e-book-4321e-default-rtdb.firebaseio.com",
     "project_id": "e-book-4321e",
     "storage_bucket": "e-book-4321e.appspot.com"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "97002070676-1pr7esnbukghslj8c8a04dk4bc353ee8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.e_book",
+            "certificate_hash": "68a13a11854f8a7359d0a097dbec72da1c0d503d"
+          }
+        },
         {
           "client_id": "97002070676-62npv92mbbhru40lphlel833krrt7s78.apps.googleusercontent.com",
           "client_type": 3
