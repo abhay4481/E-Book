@@ -1,11 +1,11 @@
 package com.example.e_book.screen
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
@@ -14,8 +14,8 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -26,49 +26,33 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.e_book.R
-import com.example.e_book.data.bookImageList
-import com.example.e_book.data.bookList
-import com.example.e_book.data.dataProvider
+import com.example.e_book.`class`.BottomNavItem
+import com.example.e_book.data.*
 import com.google.gson.Gson
-import java.time.format.TextStyle
-import kotlin.text.Typography
 
+
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun Home(navController: NavController){
-        Box(Modifier.background(color = Color(color = R.color.BackgroundColor) )) {
-            Column {
-                SearchBar()
-                SlidingList(navController)
-                SlidingImageList()
+    Scaffold(bottomBar = { com.example.e_book.BottomNavigation(navController = navController) }) {
+        HomeTime(navController = navController)
+    }
+}
+@Composable
+fun HomeTime(navController: NavController){
 
+        Box(Modifier.background(color = Color(color = R.color.BackgroundColor) )) {
+            Image(painter = painterResource(id = R.drawable.back2), contentDescription = null, contentScale = ContentScale.FillBounds, modifier = Modifier.size(height = 1000.dp, width = 400.dp))
+            Column {
+//                SearchBar(Modifier, navController)
+                Text(text = "HOME", style = MaterialTheme.typography.h4, modifier = Modifier.padding(vertical = 20.dp, horizontal = 10.dp), color = Color.White, fontWeight = FontWeight.Bold)
+                SlidingList(navController)
+                SlidingImageList(navController)
             }
         }
 }
 
-@Composable
-fun SearchBar(modifier: Modifier=Modifier )
-{
-    Column {
-        TextField(
-            value = "",
-            onValueChange = {},
-            leadingIcon = {
-                Icon(imageVector = Icons.Default.Search, contentDescription = null)
-            },
-            colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = MaterialTheme.colors.surface
-            ),
-            placeholder = {
-                Text(text = "Search")
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-                .heightIn(min = 52.dp),
-            shape = RoundedCornerShape(8.dp),
-        )
-    }
-}
+
 
 @Composable
 fun SlidingList(navController:NavController) {
@@ -97,35 +81,36 @@ val QuickSand=FontFamily(
 val Typography=Typography(h5= androidx.compose.ui.text.TextStyle(fontFamily = QuickSand, fontWeight = FontWeight.Normal, fontSize = 10.sp))
 @Composable
 fun AlingmentBookList(text: String, modifier: Modifier=Modifier) {
-    Card(modifier
-        .padding(vertical = 20.dp, horizontal = 3.dp)
-        .height(50.dp), elevation = 10.dp , backgroundColor = Color.White, shape = RoundedCornerShape(20.dp)) {
-        Text(text =text, style = MaterialTheme.typography.h5, modifier = Modifier.padding(horizontal = 5.dp, vertical = 7.dp))
-    }
+        Text(text =text, style = MaterialTheme.typography.h5, modifier = modifier.padding(horizontal = 5.dp, vertical = 7.dp), color = Color.White)
 }
 @Composable
-fun SlidingImageList() {
-
+fun SlidingImageList(navController: NavController) {
+    fun navigateToBookList(bookList: dataProviderToCard){
+        val BookPdfView= Gson().toJson(bookList)
+        navController.navigate("bookPdfList/$BookPdfView")
+    }
     Column(){
         LazyVerticalGrid(
             contentPadding = PaddingValues(vertical = 5.dp , horizontal = 8.dp),
             columns=GridCells.Fixed(2)
         )
         {
-            items(bookImageList){
+            items(items = bookImageList){
                 item ->
-                AlingmentBookImageList(image = item.image)
+                AlingmentBookImageList(image = item.image, Modifier.clickable {
+                    navigateToBookList(item)
+                })
             }
         }
     }
 }
 @Composable
-fun AlingmentBookImageList(image: Int) {
+fun AlingmentBookImageList(image: Int, modifier: Modifier) {
     Card(Modifier
         .padding(vertical = 8.dp, horizontal = 17.dp)
         .height(190.dp)
         .width(30.dp) , elevation = 4.dp , backgroundColor = Color.LightGray) {
-       Image(painter = painterResource(id =image ), contentDescription ="Image" , contentScale = ContentScale.FillBounds, modifier = Modifier
+       Image(painter = painterResource(id =image ), contentDescription ="Image" , contentScale = ContentScale.FillBounds, modifier = modifier
            .height(150.dp)
            .width(50.dp)
            )
