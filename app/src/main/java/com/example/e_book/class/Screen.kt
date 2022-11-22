@@ -11,6 +11,8 @@ sealed class Screen() {
     object About:Screen()
     object Setting:Screen()
     object MoreBook:Screen()
+    object SignIn:Screen()
+    object SignUp:Screen()
 
 
 }
