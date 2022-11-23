@@ -78,9 +78,6 @@ class MainActivity : ComponentActivity() {
             composable(BottomNavItem.Download.screen_route) {
                 Download(navController)
             }
-            composable(BottomNavItem.Audio.screen_route) {
-                Audio()
-            }
             composable(BottomNavItem.Setting.screen_route) {
                 Setting(navController = navController)
             }

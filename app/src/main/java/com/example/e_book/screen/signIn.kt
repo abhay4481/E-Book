@@ -25,9 +25,6 @@ import com.google.firebase.auth.FirebaseAuth
  var autha:FirebaseAuth=FirebaseAuth.getInstance()
 
 
-private lateinit var googleSignInClient:GoogleSignInAccount
-
-
 @Composable
 fun SignIn(navController: NavController){
     var email by remember { mutableStateOf("") }

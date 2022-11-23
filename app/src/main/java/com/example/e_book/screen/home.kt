@@ -44,7 +44,6 @@ fun HomeTime(navController: NavController){
         Box(Modifier.background(color = Color(color = R.color.BackgroundColor) )) {
             Image(painter = painterResource(id = R.drawable.back2), contentDescription = null, contentScale = ContentScale.FillBounds, modifier = Modifier.size(height = 1000.dp, width = 400.dp))
             Column {
-//                SearchBar(Modifier, navController)
                 Text(text = "HOME", style = MaterialTheme.typography.h4, modifier = Modifier.padding(vertical = 20.dp, horizontal = 10.dp), color = Color.White, fontWeight = FontWeight.Bold)
                 SlidingList(navController)
                 SlidingImageList(navController)

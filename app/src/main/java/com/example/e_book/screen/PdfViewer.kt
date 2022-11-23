@@ -31,12 +31,9 @@ import com.example.e_book.`class`.BottomNavItem
 import com.example.e_book.data.*
 import com.github.barteksc.pdfviewer.PDFView
 
-//var favourites = listOf<dataProviderToCard>()
 
-
-//var download = listOf<dataProviderToCard>()
 var down by mutableStateOf(false)
-//var isPressed=Ins
+
 
 @Composable
 fun PdfVieweroffline(navController: NavController, book: dataProviderToCard){
