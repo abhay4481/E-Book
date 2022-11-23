@@ -41,10 +41,10 @@ fun About( navController: NavController) {
         Column() {
             Spacer(modifier = Modifier.padding(26.dp))
             AboutScreen(navController = navController, "Abhay Pratap Singh", R.drawable.user)
-            AboutScreen(navController = navController, "Isha Agrawal", R.drawable.isha2)
+            AboutScreen(navController = navController, "Isha Agrawal", R.drawable.user)
             AboutScreen(navController = navController, "Aryan Singh", R.drawable.user)
             AboutScreen(navController = navController, "Alisha Dixit", R.drawable.user)
-            AboutScreen(navController = navController, "Divyanshu Singh", R.drawable.divyanshu)
+            AboutScreen(navController = navController, "Divyanshu Singh", R.drawable.user)
             Spacer(modifier = Modifier.padding(30.dp))
         }
     }
@@ -70,40 +70,7 @@ fun AboutScreen(navController:NavController, name:String,photo:Int){
                     Text(text = "GLA University ", style = MaterialTheme.typography.h6)
                 }
             }
-            Row() {
-                Spacer(modifier = Modifier.width(12.dp))
-                Image(painter = painterResource(id = R.drawable.facebool),
-                    contentDescription = null,
-                    Modifier
-                        .clip(
-                            CircleShape
-                        )
-                        .size(50.dp))
-                Spacer(modifier = Modifier.width(40.dp))
-                Image(painter = painterResource(id = R.drawable.insta), contentDescription = null,
-                    Modifier
-                        .clip(
-                            CircleShape
-                        )
-                        .size(50.dp))
-                Spacer(modifier = Modifier.width(40.dp))
-                Image(painter = painterResource(id = R.drawable.github), contentDescription = null,
-                    Modifier
-                        .clip(
-                            CircleShape
-                        )
-                        .size(50.dp)
-                        .clickable(onClick = {}))
 
-                Spacer(modifier = Modifier.width(40.dp))
-                Image(painter = painterResource(id = R.drawable.twitter), contentDescription = null,
-                    Modifier
-                        .clip(
-                            CircleShape
-                        )
-                        .size(50.dp))
-                Spacer(modifier = Modifier.width(12.dp))
-            }
         }
     }
 }
